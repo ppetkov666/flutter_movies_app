@@ -11,9 +11,15 @@ class MovieApiService {
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonList = json.decode(response.body);
-      return jsonList.map((json) => MovieDto.fromJson(json)).toList();
+
+      print(const JsonEncoder.withIndent('  ').convert(jsonList));
+
+      final futures = jsonList.map((json) => MovieDto.fromJsonAsync(json)).toList();
+      return await Future.wait(futures); // parallel async validation
     } else {
       throw Exception('Failed to load movies');
     }
   }
+
+
 }
