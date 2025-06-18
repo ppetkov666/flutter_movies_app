@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:movies_app/constants/ui_strings.dart';
 import 'package:provider/provider.dart';
-
 import 'package:movies_app/core/providers/navigator_provider.dart';
 import 'package:movies_app/core/providers/auth_provider.dart';
 import 'package:movies_app/presentation/watch_list/view_model/watch_list_view_model.dart';
-
 import 'package:movies_app/routes/app_routes.dart';
-import 'package:movies_app/presentation/auth/login_screen.dart';
 import 'package:movies_app/presentation/movies/view/movie_screen.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:movies_app/presentation/auth/screens/auth_screen.dart';
 
 class InitialWidget extends StatefulWidget {
   const InitialWidget({super.key});
@@ -43,7 +41,7 @@ class _InitialWidgetState extends State<InitialWidget> {
             debugShowCheckedModeBanner: false,
             home: authProvider.isAuthenticated
                 ? const MoviesScreen()
-                : const LoginScreen(),
+                : const AuthScreen(),
             onGenerateRoute: AppRoutes.generateRoute,
           );
         },

@@ -13,6 +13,7 @@ class UIStrings {
   static const String createAccount = 'Create Account';
   static const String emailLabel = 'Email';
   static const String passwordLabel = 'Password';
+  static const String repeatPasswordLabel = 'Repeat Password';
   static const String ratingLabel = 'Rating';
   static const String averageRatingLabel = 'Average Rating';
   static const String releaseYearLabel = 'Release Year';
@@ -29,4 +30,5 @@ class UIStrings {
   static const String moviesAppLabel = 'Moviees App';
   static const String originalTitleLabel = 'Original Title';
   static const String acccountInfoLabel = 'Account Info';
+  static const String movieLoginBanner = 'assets/images/movie_login_banner.png';
 }

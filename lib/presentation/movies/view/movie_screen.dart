@@ -72,11 +72,9 @@ class _MoviesScreenState extends State<MoviesScreen> {
             if (viewModel.isLoading) {
               return const Center(child: CircularProgressIndicator());
             }
-
             if (viewModel.error != null) {
               return Center(child: Text(viewModel.error!));
             }
-
             if (viewModel.movies.isEmpty) {
               return Center(
                 child: Padding(

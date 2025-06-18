@@ -16,7 +16,12 @@ class SignupViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  void validateAndSignup(String email, String password, VoidCallback onSuccess) {
+  void validateAndSignup(
+      String email,
+      String password,
+      String repeatPassword,
+      VoidCallback onSuccess,
+      ) {
     formErrors.clear();
 
     if (email.isEmpty) {
@@ -31,6 +36,12 @@ class SignupViewModel extends ChangeNotifier {
       formErrors.setError('password', 'Password must be at least 6 characters');
     }
 
+    if (repeatPassword.isEmpty) {
+      formErrors.setError('repeatPassword', 'Repeat password is required');
+    } else if (password != repeatPassword) {
+      formErrors.setError('repeatPassword', 'Passwords do not match');
+    }
+
     notifyListeners();
 
     if (!formErrors.hasErrors) {
@@ -38,7 +49,11 @@ class SignupViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> signup(String email, String password, VoidCallback onSuccess) async {
+  Future<void> signup(
+      String email,
+      String password,
+      VoidCallback onSuccess,
+      ) async {
     if (_isLoading) return;
 
     _isLoading = true;
