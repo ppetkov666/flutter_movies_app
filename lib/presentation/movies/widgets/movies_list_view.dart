@@ -1,39 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:movies_app/domain/entities/movie.dart';
 import 'package:movies_app/presentation/movies/widgets/movie_card.dart';
+import 'package:movies_app/presentation/movies/view_model/movies_view_model.dart';
+import 'package:provider/provider.dart';
 
-class MoviesListView extends StatelessWidget {
+class MoviesListView extends StatefulWidget {
   final List<Movie> movies;
 
   const MoviesListView({super.key, required this.movies});
 
   @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (movies.isEmpty) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(
-                'No results available',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ),
-          );
-        }
+  State<MoviesListView> createState() => _MoviesListViewState();
+}
 
-        return ListView.builder(
-          padding: const EdgeInsets.all(8),
-          itemCount: movies.length,
-          itemBuilder: (context, index) {
-            final movie = movies[index];
-            return MovieCard(
-              movie: movie,
-              hasValidImage: movie.hasValidImage,
-            );
-          },
-        );
+class _MoviesListViewState extends State<MoviesListView> {
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final viewModel = Provider.of<MoviesViewModel>(context, listen: false);
+
+    if (!_scrollController.hasClients || viewModel.isLoading) return;
+
+    const thresholdPixels = 200.0; // this is how close to the bottom of the scren  before another load
+
+    if (_scrollController.position.pixels + thresholdPixels >=
+        _scrollController.position.maxScrollExtent) {
+      viewModel.loadMore();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      controller: _scrollController,
+      itemCount: widget.movies.length,
+      itemBuilder: (context, index) {
+        final movie = widget.movies[index];
+        return MovieCard(movie: movie, hasValidImage: movie.hasValidImage);
       },
     );
   }

@@ -76,6 +76,18 @@ class _MoviesScreenState extends State<MoviesScreen> {
               return Center(child: Text(viewModel.error!));
             }
 
+            if (viewModel.movies.isEmpty) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    'No results available',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+              );
+            }
+
             return MoviesListView(movies: viewModel.movies);
           },
         ),

@@ -7,6 +7,7 @@ class MovieDto {
   final String year;
   final List<String> genres;
   final List<int> ratings;
+  final String poster;
   final String posterUrl;
   final String contentRating;
   final String duration;
@@ -16,6 +17,7 @@ class MovieDto {
   final List<String> actors;
   final String imdbRating;
   final bool hasValidImage;
+  final double averageRating;
 
   MovieDto({
     required this.id,
@@ -23,6 +25,7 @@ class MovieDto {
     required this.year,
     required this.genres,
     required this.ratings,
+    required this.poster,
     required this.posterUrl,
     required this.contentRating,
     required this.duration,
@@ -32,6 +35,7 @@ class MovieDto {
     required this.actors,
     required this.imdbRating,
     required this.hasValidImage,
+    required this.averageRating,
   });
 
   static Future<MovieDto> fromJsonAsync(Map<String, dynamic> json) async {
@@ -50,6 +54,7 @@ class MovieDto {
       ratings: (json['ratings'] as List<dynamic>? ?? [])
           .map((e) => (e as num).toInt())
           .toList(),
+      poster: json['poster'] ?? '',
       posterUrl: cleanedUrl,
       contentRating: json['contentRating'] ?? '',
       duration: json['duration'] ?? '',
@@ -61,9 +66,13 @@ class MovieDto {
           ? json['imdbRating'].toString()
           : 'N/A',
       hasValidImage: isValid,
+      averageRating: json['averageRating'] != null
+          ? (json['averageRating'] is int
+          ? (json['averageRating'] as int).toDouble()
+          : json['averageRating'] as double)
+          : 0.0,
     );
   }
-
 
   Movie toDomain() {
     return Movie(
@@ -72,6 +81,7 @@ class MovieDto {
       year: year,
       genres: genres,
       ratings: ratings,
+      poster: poster,
       posterUrl: posterUrl,
       contentRating: contentRating,
       duration: duration,
@@ -81,9 +91,9 @@ class MovieDto {
       actors: actors,
       imdbRating: imdbRating,
       hasValidImage: hasValidImage,
+      averageRating: averageRating,
     );
   }
-
 
   static Future<bool> _checkImageExists(String url) async {
     if (url == 'INVALID_URL') return false;

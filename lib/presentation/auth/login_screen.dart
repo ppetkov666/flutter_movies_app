@@ -79,20 +79,22 @@ class _LoginFormState extends State<_LoginForm> {
                       onPressed: viewModel.isLoading
                           ? null
                           : () {
-                        viewModel.validateAndLogin(
-                          emailController.text.trim(),
-                          passwordController.text.trim(),
-                              () {
-                            Provider.of<NavigatorProvider>(context, listen: false)
-                                .pushAndRemoveUntil('/');
-                          },
-                        );
-                      },
+                              viewModel.validateAndLogin(
+                                emailController.text.trim(),
+                                passwordController.text.trim(),
+                                () {
+                                  Provider.of<NavigatorProvider>(context,
+                                          listen: false)
+                                      .pushAndRemoveUntil('/');
+                                },
+                              );
+                            },
                       child: viewModel.isLoading
                           ? const CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      )
+                              strokeWidth: 2,
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                            )
                           : const Text('Login'),
                     ),
                   ],
@@ -101,8 +103,10 @@ class _LoginFormState extends State<_LoginForm> {
             ),
             TextButton(
               onPressed: () {
-                Provider.of<NavigatorProvider>(context, listen: false)
-                    .pushAndRemoveUntil('/signup');
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  Provider.of<NavigatorProvider>(context, listen: false)
+                      .pushAndRemoveUntil('/signup');
+                });
               },
               child: const Text("Do not have an account? Sign up"),
             ),
@@ -112,5 +116,3 @@ class _LoginFormState extends State<_LoginForm> {
     );
   }
 }
-
-

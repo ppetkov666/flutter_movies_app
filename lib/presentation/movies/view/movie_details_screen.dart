@@ -31,12 +31,12 @@ class MovieDetailsScreen extends StatelessWidget {
               aspectRatio: 2 / 3,
               child: hasValidImage
                   ? CachedNetworkImage(
-                imageUrl: movie.posterUrl,
-                fit: BoxFit.cover,
-                placeholder: (_, __) =>
-                const Center(child: CircularProgressIndicator()),
-                errorWidget: (_, __, ___) => const FallbackImage(),
-              )
+                      imageUrl: movie.posterUrl,
+                      fit: BoxFit.cover,
+                      placeholder: (_, __) =>
+                          const Center(child: CircularProgressIndicator()),
+                      errorWidget: (_, __, ___) => const FallbackImage(),
+                    )
                   : const FallbackImage(),
             ),
             const SizedBox(height: 16),
@@ -57,20 +57,19 @@ class MovieDetailsScreen extends StatelessWidget {
             const SizedBox(height: 8),
             Text('Content Rating: ${movie.contentRating}'),
             const SizedBox(height: 8),
-            Text('Average Rating: ${movie.averageRating}'),
+            Text('Average Rating: ${movie.averageRatingDisplay}'),
             const SizedBox(height: 16),
-
             ElevatedButton.icon(
               onPressed: () {
                 watchListViewModel.toggleMovie(movie);
               },
               icon: Icon(isSaved ? Icons.check : Icons.bookmark_border),
-              label: Text(isSaved ? 'Saved to Watch List' : 'Add to Watch List'),
+              label:
+                  Text(isSaved ? 'Saved to Watch List' : 'Add to Watch List'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: isSaved ? Colors.green : null,
               ),
             ),
-
             const SizedBox(height: 24),
             if (movie.genres.isNotEmpty) ...[
               const Text(

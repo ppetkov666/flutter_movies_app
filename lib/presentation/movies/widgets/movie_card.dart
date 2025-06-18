@@ -20,16 +20,16 @@ class MovieCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final navigatorProvider =
-        Provider.of<NavigatorProvider>(context, listen: false);
+    Provider.of<NavigatorProvider>(context, listen: false);
     final watchListViewModel = Provider.of<WatchListViewModel>(context);
     final isSaved = watchListViewModel.isSaved(movie);
 
     final displayRating =
-        movie.imdbRating.isNotEmpty && movie.imdbRating != 'N/A'
-            ? movie.imdbRating
-            : movie.ratings.isNotEmpty
-                ? movie.averageRating
-                : 'N/A';
+    movie.imdbRating.isNotEmpty && movie.imdbRating != 'N/A'
+        ? movie.imdbRating
+        : movie.ratings.isNotEmpty
+        ? movie.averageRatingDisplay
+        : 'N/A';
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -39,12 +39,12 @@ class MovieCard extends StatelessWidget {
           height: 70,
           child: hasValidImage
               ? CachedNetworkImage(
-                  imageUrl: movie.posterUrl,
-                  fit: BoxFit.cover,
-                  placeholder: (_, __) => const Center(
-                      child: CircularProgressIndicator(strokeWidth: 2)),
-                  errorWidget: (_, __, ___) => const FallbackImage(),
-                )
+            imageUrl: movie.posterUrl,
+            fit: BoxFit.cover,
+            placeholder: (_, __) => const Center(
+                child: CircularProgressIndicator(strokeWidth: 2)),
+            errorWidget: (_, __, ___) => const FallbackImage(),
+          )
               : const FallbackImage(),
         ),
         title: Text(movie.title),

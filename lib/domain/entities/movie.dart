@@ -5,35 +5,39 @@ class Movie {
   final String title;
   final String year;
   final List<String> genres;
-  final String posterUrl;
-  final String imdbRating;
-  final bool hasValidImage;
-  final String storyline;
-  final List<String> actors;
   final List<int> ratings;
+  final String poster;
+  final String posterUrl;
   final String contentRating;
   final String duration;
   final String releaseDate;
   final String originalTitle;
+  final String storyline;
+  final List<String> actors;
+  final String imdbRating;
+  final bool hasValidImage;
+  final double averageRating;
 
   Movie({
     required this.id,
     required this.title,
     required this.year,
     required this.genres,
-    required this.posterUrl,
-    required this.imdbRating,
-    required this.hasValidImage,
-    required this.storyline,
-    required this.actors,
     required this.ratings,
+    required this.poster,
+    required this.posterUrl,
     required this.contentRating,
     required this.duration,
     required this.releaseDate,
     required this.originalTitle,
+    required this.storyline,
+    required this.actors,
+    required this.imdbRating,
+    required this.hasValidImage,
+    required this.averageRating,
   });
 
-  String get averageRating {
+  String get averageRatingDisplay {
     if (ratings.isEmpty) return 'N/A';
     final avg = ratings.reduce((a, b) => a + b) / ratings.length;
     return avg.toStringAsFixed(1);
@@ -47,6 +51,7 @@ class Movie {
       'title': title,
       'year': year,
       'genres': genres,
+      'poster': poster,
       'posterUrl': posterUrl,
       'imdbRating': imdbRating,
       'hasValidImage': hasValidImage,
@@ -57,6 +62,7 @@ class Movie {
       'duration': duration,
       'releaseDate': releaseDate,
       'originalTitle': originalTitle,
+      'averageRating': averageRating,
     };
   }
 
@@ -66,16 +72,22 @@ class Movie {
       title: map['title'] ?? '',
       year: map['year'] ?? '',
       genres: List<String>.from(map['genres'] ?? []),
-      posterUrl: map['posterUrl'] ?? '',
-      imdbRating: map['imdbRating'] ?? '',
-      hasValidImage: map['hasValidImage'] ?? false,
-      storyline: map['storyline'] ?? '',
-      actors: List<String>.from(map['actors'] ?? []),
       ratings: List<int>.from(map['ratings'] ?? []),
+      poster: map['poster'] ?? '',
+      posterUrl: map['posterurl'] ?? '',
       contentRating: map['contentRating'] ?? '',
       duration: map['duration'] ?? '',
       releaseDate: map['releaseDate'] ?? '',
       originalTitle: map['originalTitle'] ?? '',
+      storyline: map['storyline'] ?? '',
+      actors: List<String>.from(map['actors'] ?? []),
+      imdbRating: map['imdbRating'] ?? '',
+      hasValidImage: map['hasValidImage'] is bool ? map['hasValidImage'] : false,
+      averageRating: (map['averageRating'] != null)
+          ? (map['averageRating'] is int
+          ? (map['averageRating'] as int).toDouble()
+          : map['averageRating'] as double)
+          : 0.0,
     );
   }
 }

@@ -99,8 +99,11 @@ class _SignupFormState extends State<_SignupForm> {
             ),
             TextButton(
               onPressed: () {
-                Provider.of<NavigatorProvider>(context, listen: false)
-                    .pushAndRemoveUntil('/login');
+                //allow tap splash animation to complete and avoid animation controller errors
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  Provider.of<NavigatorProvider>(context, listen: false)
+                      .pushAndRemoveUntil('/login');
+                });
               },
               child: const Text("Already have an account? Log in"),
             ),
