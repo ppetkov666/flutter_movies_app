@@ -4,6 +4,9 @@ import 'package:movies_app/data/services/movie_api_service.dart';
 import 'package:movies_app/presentation/movies/view_model/movies_view_model.dart';
 import 'package:movies_app/domain/repositories/movie_repository_impl.dart';
 import 'package:movies_app/presentation/movies/widgets/movies_list_view.dart';
+import 'package:movies_app/core/providers/auth_provider.dart';
+import 'package:movies_app/core/providers/navigator_provider.dart';
+import 'package:movies_app/routes/app_routes.dart';
 
 class MoviesScreen extends StatelessWidget {
   const MoviesScreen({super.key});
@@ -15,7 +18,34 @@ class MoviesScreen extends StatelessWidget {
         MovieRepositoryImpl(apiService: MovieApiService()),
       )..fetchMovies(),
       child: Scaffold(
-        appBar: AppBar(title: const Text('Coming Soon')),
+        appBar: AppBar(
+          title: const Text('Coming Soon'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.person),
+              tooltip: 'Profile',
+              onPressed: () {
+                Provider.of<NavigatorProvider>(context, listen: false)
+                    .pushNamed(AppRoutes.profile);
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.bookmark),
+              tooltip: 'Watch List',
+              onPressed: () {
+                Provider.of<NavigatorProvider>(context, listen: false)
+                    .pushNamed(AppRoutes.watchList);
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.logout),
+              tooltip: 'Logout',
+              onPressed: () {
+                Provider.of<AuthProvider>(context, listen: false).logout();
+              },
+            ),
+          ],
+        ),
         body: Consumer<MoviesViewModel>(
           builder: (context, viewModel, _) {
             if (viewModel.isLoading) {

@@ -1,7 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:movies_app/domain/entities/movie.dart';
-import 'package:movies_app/routes/app_routes.dart'; // ✅ Add this import
+import 'package:movies_app/core/providers/navigator_provider.dart';
+import 'package:movies_app/routes/app_routes.dart';
+import 'package:movies_app/presentation/watch_list/view_model/watch_list_view_model.dart';
+import 'package:movies_app/presentation/shared/fallback_image.dart';
 
 class MovieCard extends StatelessWidget {
   final Movie movie;
@@ -15,6 +19,18 @@ class MovieCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final navigatorProvider =
+        Provider.of<NavigatorProvider>(context, listen: false);
+    final watchListViewModel = Provider.of<WatchListViewModel>(context);
+    final isSaved = watchListViewModel.isSaved(movie);
+
+    final displayRating =
+        movie.imdbRating.isNotEmpty && movie.imdbRating != 'N/A'
+            ? movie.imdbRating
+            : movie.ratings.isNotEmpty
+                ? movie.averageRating
+                : 'N/A';
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: ListTile(
@@ -23,19 +39,27 @@ class MovieCard extends StatelessWidget {
           height: 70,
           child: hasValidImage
               ? CachedNetworkImage(
-            imageUrl: movie.posterUrl,
-            fit: BoxFit.cover,
-            placeholder: (_, __) =>
-            const Center(child: CircularProgressIndicator(strokeWidth: 2)),
-            errorWidget: (_, __, ___) => _fallbackImage(),
-          )
-              : _fallbackImage(),
+                  imageUrl: movie.posterUrl,
+                  fit: BoxFit.cover,
+                  placeholder: (_, __) => const Center(
+                      child: CircularProgressIndicator(strokeWidth: 2)),
+                  errorWidget: (_, __, ___) => const FallbackImage(),
+                )
+              : const FallbackImage(),
         ),
         title: Text(movie.title),
-        subtitle: Text('IMDb: ${movie.imdbRating}'),
+        subtitle: Text('Rating: $displayRating'),
+        trailing: IconButton(
+          icon: Icon(
+            isSaved ? Icons.bookmark : Icons.bookmark_border,
+            color: isSaved ? Colors.green : Colors.grey,
+          ),
+          onPressed: () {
+            watchListViewModel.toggleMovie(movie);
+          },
+        ),
         onTap: () {
-          Navigator.pushNamed(
-            context,
+          navigatorProvider.pushNamed(
             AppRoutes.movieDetails,
             arguments: {
               'movie': movie,
@@ -43,18 +67,6 @@ class MovieCard extends StatelessWidget {
             },
           );
         },
-      ),
-    );
-  }
-
-  Widget _fallbackImage() {
-    return Container(
-      color: Colors.grey.shade200,
-      alignment: Alignment.center,
-      child: const Text(
-        'No image',
-        style: TextStyle(fontSize: 12, color: Colors.black45),
-        textAlign: TextAlign.center,
       ),
     );
   }
