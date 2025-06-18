@@ -40,4 +40,42 @@ class Movie {
   }
 
   String get formattedDuration => TimeFormatter.formatDurationIso8601(duration);
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'year': year,
+      'genres': genres,
+      'posterUrl': posterUrl,
+      'imdbRating': imdbRating,
+      'hasValidImage': hasValidImage,
+      'storyline': storyline,
+      'actors': actors,
+      'ratings': ratings,
+      'contentRating': contentRating,
+      'duration': duration,
+      'releaseDate': releaseDate,
+      'originalTitle': originalTitle,
+    };
+  }
+
+  factory Movie.fromMap(Map<String, dynamic> map) {
+    return Movie(
+      id: map['id'] ?? '',
+      title: map['title'] ?? '',
+      year: map['year'] ?? '',
+      genres: List<String>.from(map['genres'] ?? []),
+      posterUrl: map['posterUrl'] ?? '',
+      imdbRating: map['imdbRating'] ?? '',
+      hasValidImage: map['hasValidImage'] ?? false,
+      storyline: map['storyline'] ?? '',
+      actors: List<String>.from(map['actors'] ?? []),
+      ratings: List<int>.from(map['ratings'] ?? []),
+      contentRating: map['contentRating'] ?? '',
+      duration: map['duration'] ?? '',
+      releaseDate: map['releaseDate'] ?? '',
+      originalTitle: map['originalTitle'] ?? '',
+    );
+  }
 }

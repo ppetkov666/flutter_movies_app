@@ -16,7 +16,7 @@ class ProfileViewModel extends ChangeNotifier {
   String get userEmail => FirebaseAuth.instance.currentUser?.email ?? 'No email';
   int get savedMoviesCount => _watchListViewModel.savedMovies.length;
 
-  void logout() {
-    _authProvider.logout();
+  Future<void> logout() async {
+    await _authProvider.logout();
   }
 }

@@ -8,15 +8,35 @@ import 'package:movies_app/core/providers/auth_provider.dart';
 import 'package:movies_app/core/providers/navigator_provider.dart';
 import 'package:movies_app/routes/app_routes.dart';
 
-class MoviesScreen extends StatelessWidget {
+class MoviesScreen extends StatefulWidget {
   const MoviesScreen({super.key});
 
   @override
+  State<MoviesScreen> createState() => _MoviesScreenState();
+}
+
+class _MoviesScreenState extends State<MoviesScreen> {
+  late final MoviesViewModel _viewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _viewModel = MoviesViewModel(
+      MovieRepositoryImpl(apiService: MovieApiService()),
+    );
+    _viewModel.fetchMovies();
+  }
+
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => MoviesViewModel(
-        MovieRepositoryImpl(apiService: MovieApiService()),
-      )..fetchMovies(),
+    return ChangeNotifierProvider.value(
+      value: _viewModel,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Coming Soon'),

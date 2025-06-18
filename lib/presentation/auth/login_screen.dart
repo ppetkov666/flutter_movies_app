@@ -30,44 +30,74 @@ class _LoginFormState extends State<_LoginForm> {
   final passwordController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
-    final viewModel = Provider.of<LoginViewModel>(context);
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+            Consumer<LoginViewModel>(
+              builder: (context, viewModel, _) => TextField(
+                controller: emailController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  errorText: viewModel.formErrors['email'],
+                ),
+              ),
             ),
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(labelText: 'Password'),
+            Consumer<LoginViewModel>(
+              builder: (context, viewModel, _) => TextField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  errorText: viewModel.formErrors['password'],
+                ),
+              ),
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: viewModel.isLoading
-                  ? null
-                  : () {
-                viewModel.login(
-                  emailController.text.trim(),
-                  passwordController.text.trim(),
-                      () {
-                    Provider.of<NavigatorProvider>(context, listen: false)
-                        .pushAndRemoveUntil('/');
-                  },
+            Consumer<LoginViewModel>(
+              builder: (context, viewModel, _) {
+                return Column(
+                  children: [
+                    if (viewModel.error != null) ...[
+                      const SizedBox(height: 12),
+                      Text(
+                        viewModel.error!,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    ],
+                    ElevatedButton(
+                      onPressed: viewModel.isLoading
+                          ? null
+                          : () {
+                        viewModel.validateAndLogin(
+                          emailController.text.trim(),
+                          passwordController.text.trim(),
+                              () {
+                            Provider.of<NavigatorProvider>(context, listen: false)
+                                .pushAndRemoveUntil('/');
+                          },
+                        );
+                      },
+                      child: viewModel.isLoading
+                          ? const CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      )
+                          : const Text('Login'),
+                    ),
+                  ],
                 );
               },
-              child: viewModel.isLoading
-                  ? const CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              )
-                  : const Text('Login'),
             ),
             TextButton(
               onPressed: () {
@@ -76,16 +106,11 @@ class _LoginFormState extends State<_LoginForm> {
               },
               child: const Text("Do not have an account? Sign up"),
             ),
-            if (viewModel.error != null) ...[
-              const SizedBox(height: 12),
-              Text(
-                viewModel.error!,
-                style: const TextStyle(color: Colors.red),
-              ),
-            ],
           ],
         ),
       ),
     );
   }
 }
+
+

@@ -30,9 +30,14 @@ class _SignupFormState extends State<_SignupForm> {
   final passwordController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
-    final viewModel = Provider.of<SignupViewModel>(context);
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sign Up'),
@@ -42,39 +47,56 @@ class _SignupFormState extends State<_SignupForm> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+            Consumer<SignupViewModel>(
+              builder: (context, viewModel, _) => TextField(
+                controller: emailController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  errorText: viewModel.formErrors['email'],
+                ),
+              ),
             ),
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(labelText: 'Password'),
+            Consumer<SignupViewModel>(
+              builder: (context, viewModel, _) => TextField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  errorText: viewModel.formErrors['password'],
+                ),
+              ),
             ),
             const SizedBox(height: 16),
-            viewModel.isLoading
-                ? const CircularProgressIndicator()
-                : ElevatedButton(
-                    onPressed: () {
-                      viewModel.signup(
-                        emailController.text.trim(),
-                        passwordController.text.trim(),
-                        () {
-                          Provider.of<NavigatorProvider>(context, listen: false)
-                              .pushAndRemoveUntil('/');
-                        },
-                      );
-                    },
-                    child: const Text('Create Account'),
-                  ),
-            if (viewModel.error != null) ...[
-              const SizedBox(height: 12),
-              Text(
-                viewModel.error!,
-                style: const TextStyle(color: Colors.red),
-              ),
-            ],
-            const SizedBox(height: 12),
+            Consumer<SignupViewModel>(
+              builder: (context, viewModel, _) {
+                return Column(
+                  children: [
+                    if (viewModel.error != null) ...[
+                      Text(
+                        viewModel.error!,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                      const SizedBox(height: 12),
+                    ],
+                    viewModel.isLoading
+                        ? const CircularProgressIndicator()
+                        : ElevatedButton(
+                      onPressed: () {
+                        viewModel.validateAndSignup(
+                          emailController.text.trim(),
+                          passwordController.text.trim(),
+                              () {
+                            Provider.of<NavigatorProvider>(context, listen: false)
+                                .pushAndRemoveUntil('/');
+                          },
+                        );
+                      },
+                      child: const Text('Create Account'),
+                    ),
+                  ],
+                );
+              },
+            ),
             TextButton(
               onPressed: () {
                 Provider.of<NavigatorProvider>(context, listen: false)
@@ -88,3 +110,4 @@ class _SignupFormState extends State<_SignupForm> {
     );
   }
 }
+

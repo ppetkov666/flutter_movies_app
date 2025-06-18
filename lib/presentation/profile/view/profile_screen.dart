@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:movies_app/presentation/profile/view_model/profile_view_model.dart';
+import 'package:movies_app/core/providers/navigator_provider.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -26,7 +27,14 @@ class ProfileScreen extends StatelessWidget {
                 Text('Saved Movies: ${viewModel.savedMoviesCount}'),
                 const SizedBox(height: 24),
                 ElevatedButton.icon(
-                  onPressed: viewModel.logout,
+                  onPressed: () async {
+                    await viewModel.logout();
+                    // Navigate safely after the current frame to avoid animation errors
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      Provider.of<NavigatorProvider>(context, listen: false)
+                          .pushAndRemoveUntil('/');
+                    });
+                  },
                   icon: const Icon(Icons.logout),
                   label: const Text('Logout'),
                 ),

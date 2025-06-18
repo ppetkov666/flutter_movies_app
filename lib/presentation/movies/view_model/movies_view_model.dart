@@ -3,6 +3,7 @@ import 'package:movies_app/domain/entities/movie.dart';
 import 'package:movies_app/domain/repositories/movie_repository.dart';
 
 class MoviesViewModel extends ChangeNotifier {
+  bool _isDisposed = false;
   final MovieRepository _repository;
 
   MoviesViewModel(this._repository);
@@ -16,10 +17,22 @@ class MoviesViewModel extends ChangeNotifier {
   String? _error;
   String? get error => _error;
 
+  @override
+  void dispose() {
+    _isDisposed = true;
+    super.dispose();
+  }
+
+  void safeNotifyListeners() {
+    if (!_isDisposed) {
+      notifyListeners();
+    }
+  }
+
   Future<void> fetchMovies() async {
     _isLoading = true;
     _error = null;
-    notifyListeners();
+    safeNotifyListeners();
 
     try {
       final moviesList = await _repository.getMovies();
@@ -28,7 +41,7 @@ class MoviesViewModel extends ChangeNotifier {
       _error = 'Failed to fetch movies: ${e.toString()}';
     } finally {
       _isLoading = false;
-      notifyListeners();
+      safeNotifyListeners();
     }
   }
 }
