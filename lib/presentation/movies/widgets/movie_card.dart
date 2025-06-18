@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movies_app/constants/ui_strings.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:movies_app/domain/entities/movie.dart';
@@ -48,7 +49,7 @@ class MovieCard extends StatelessWidget {
               : const FallbackImage(),
         ),
         title: Text(movie.title),
-        subtitle: Text('Rating: $displayRating'),
+        subtitle: Text('${UIStrings.ratingLabel}: $displayRating'),
         trailing: IconButton(
           icon: Icon(
             isSaved ? Icons.bookmark : Icons.bookmark_border,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movies_app/constants/ui_strings.dart';
 import 'package:provider/provider.dart';
 
 import 'package:movies_app/core/providers/navigator_provider.dart';
@@ -38,7 +39,7 @@ class _InitialWidgetState extends State<InitialWidget> {
         builder: (context, navigatorProvider, authProvider, _) {
           return MaterialApp(
             navigatorKey: navigatorProvider.navigatorKey,
-            title: 'Moviees App',
+            title: UIStrings.moviesAppLabel,
             debugShowCheckedModeBanner: false,
             home: authProvider.isAuthenticated
                 ? const MoviesScreen()

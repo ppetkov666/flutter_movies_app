@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:movies_app/constants/error_messages.dart';
 import 'package:movies_app/domain/entities/movie.dart';
 import 'package:movies_app/domain/repositories/movie_repository.dart';
 
@@ -73,7 +74,7 @@ class MoviesViewModel extends ChangeNotifier {
         _movies.addAll(moreMovies);
       }
     } catch (e) {
-      _error = 'Failed to load more movies: ${e.toString()}';
+      _error = '${ErrorMessages.failedToLoadMoreMovies}: ${e.toString()}';
       _currentPage--;
     } finally {
       _isLoadingMore = false;

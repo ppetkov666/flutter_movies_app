@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:movies_app/constants/ui_strings.dart';
 import 'package:provider/provider.dart';
 import 'package:movies_app/domain/entities/movie.dart';
 import 'package:movies_app/presentation/shared/fallback_image.dart';
@@ -42,22 +43,22 @@ class MovieDetailsScreen extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               movie.originalTitle.isNotEmpty
-                  ? 'Original Title: ${movie.originalTitle}'
+                  ? '${UIStrings.originalTitleLabel}: ${movie.originalTitle}'
                   : movie.title,
               style: movie.originalTitle.isNotEmpty
                   ? Theme.of(context).textTheme.bodyLarge
                   : Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 8),
-            Text('Release Year: ${movie.year}'),
+            Text('${UIStrings.releaseYearLabel}: ${movie.year}'),
             const SizedBox(height: 8),
-            Text('Release Date: ${movie.releaseDate}'),
+            Text('${UIStrings.releaseDateLabel}: ${movie.releaseDate}'),
             const SizedBox(height: 8),
-            Text('Duration: ${movie.formattedDuration}'),
+            Text('${UIStrings.durationLabel}: ${movie.formattedDuration}'),
             const SizedBox(height: 8),
-            Text('Content Rating: ${movie.contentRating}'),
+            Text('${UIStrings.contentRatingLabel}: ${movie.contentRating}'),
             const SizedBox(height: 8),
-            Text('Average Rating: ${movie.averageRatingDisplay}'),
+            Text('${UIStrings.averageRatingLabel}: ${movie.averageRatingDisplay}'),
             const SizedBox(height: 16),
             ElevatedButton.icon(
               onPressed: () {
@@ -65,7 +66,7 @@ class MovieDetailsScreen extends StatelessWidget {
               },
               icon: Icon(isSaved ? Icons.check : Icons.bookmark_border),
               label:
-                  Text(isSaved ? 'Saved to Watch List' : 'Add to Watch List'),
+                  Text(isSaved ? UIStrings.savedToWatchList : UIStrings.addToWatchList),
               style: ElevatedButton.styleFrom(
                 backgroundColor: isSaved ? Colors.green : null,
               ),
@@ -73,7 +74,7 @@ class MovieDetailsScreen extends StatelessWidget {
             const SizedBox(height: 24),
             if (movie.genres.isNotEmpty) ...[
               const Text(
-                'Genres:',
+                '${UIStrings.genresLabel}:',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
@@ -87,20 +88,20 @@ class MovieDetailsScreen extends StatelessWidget {
               const SizedBox(height: 16),
             ],
             const Text(
-              'Storyline:',
+              '${UIStrings.storylineLabel}:',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
               movie.storyline.isNotEmpty
                   ? movie.storyline
-                  : 'No storyline available',
+                  : UIStrings.noStorylineAvailable,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 16),
             if (movie.actors.isNotEmpty) ...[
               const Text(
-                'Actors:',
+                '${UIStrings.actorsLabel}:',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),

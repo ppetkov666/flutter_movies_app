@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movies_app/constants/ui_strings.dart';
 import 'package:provider/provider.dart';
 import 'package:movies_app/presentation/auth/view_model/signup_view_model.dart';
 import 'package:movies_app/core/providers/navigator_provider.dart';
@@ -40,7 +41,7 @@ class _SignupFormState extends State<_SignupForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sign Up'),
+        title: const Text(UIStrings.signUpTitle),
         automaticallyImplyLeading: false,
       ),
       body: Padding(
@@ -51,7 +52,7 @@ class _SignupFormState extends State<_SignupForm> {
               builder: (context, viewModel, _) => TextField(
                 controller: emailController,
                 decoration: InputDecoration(
-                  labelText: 'Email',
+                  labelText: UIStrings.emailLabel,
                   errorText: viewModel.formErrors['email'],
                 ),
               ),
@@ -61,7 +62,7 @@ class _SignupFormState extends State<_SignupForm> {
                 controller: passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
-                  labelText: 'Password',
+                  labelText: UIStrings.passwordLabel,
                   errorText: viewModel.formErrors['password'],
                 ),
               ),
@@ -91,7 +92,7 @@ class _SignupFormState extends State<_SignupForm> {
                           },
                         );
                       },
-                      child: const Text('Create Account'),
+                      child: const Text(UIStrings.createAccount),
                     ),
                   ],
                 );
@@ -105,7 +106,7 @@ class _SignupFormState extends State<_SignupForm> {
                       .pushAndRemoveUntil('/login');
                 });
               },
-              child: const Text("Already have an account? Log in"),
+              child: const Text(UIStrings.alreadyHaveAccount),
             ),
           ],
         ),

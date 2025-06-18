@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movies_app/constants/ui_strings.dart';
 import 'package:provider/provider.dart';
 import 'package:movies_app/core/providers/navigator_provider.dart';
 import 'package:movies_app/presentation/auth/view_model/login_view_model.dart';
@@ -39,7 +40,7 @@ class _LoginFormState extends State<_LoginForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
+      appBar: AppBar(title: const Text(UIStrings.loginTitle)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -48,7 +49,7 @@ class _LoginFormState extends State<_LoginForm> {
               builder: (context, viewModel, _) => TextField(
                 controller: emailController,
                 decoration: InputDecoration(
-                  labelText: 'Email',
+                  labelText: UIStrings.emailLabel,
                   errorText: viewModel.formErrors['email'],
                 ),
               ),
@@ -58,7 +59,7 @@ class _LoginFormState extends State<_LoginForm> {
                 controller: passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
-                  labelText: 'Password',
+                  labelText: UIStrings.passwordLabel,
                   errorText: viewModel.formErrors['password'],
                 ),
               ),
@@ -95,7 +96,7 @@ class _LoginFormState extends State<_LoginForm> {
                               valueColor:
                                   AlwaysStoppedAnimation<Color>(Colors.white),
                             )
-                          : const Text('Login'),
+                          : const Text(UIStrings.loginTitle),
                     ),
                   ],
                 );
@@ -108,7 +109,7 @@ class _LoginFormState extends State<_LoginForm> {
                       .pushAndRemoveUntil('/signup');
                 });
               },
-              child: const Text("Do not have an account? Sign up"),
+              child: const Text(UIStrings.doNotHaveAccount),
             ),
           ],
         ),

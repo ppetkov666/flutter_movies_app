@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movies_app/constants/ui_strings.dart';
 import 'package:provider/provider.dart';
 import 'package:movies_app/data/services/movie_api_service.dart';
 import 'package:movies_app/presentation/movies/view_model/movies_view_model.dart';
@@ -39,11 +40,11 @@ class _MoviesScreenState extends State<MoviesScreen> {
       value: _viewModel,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Coming Soon'),
+          title: const Text(UIStrings.comingSoonTitle),
           actions: [
             IconButton(
               icon: const Icon(Icons.person),
-              tooltip: 'Profile',
+              tooltip: UIStrings.profileTooltip,
               onPressed: () {
                 Provider.of<NavigatorProvider>(context, listen: false)
                     .pushNamed(AppRoutes.profile);
@@ -51,7 +52,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
             ),
             IconButton(
               icon: const Icon(Icons.bookmark),
-              tooltip: 'Watch List',
+              tooltip: UIStrings.watchListTooltip,
               onPressed: () {
                 Provider.of<NavigatorProvider>(context, listen: false)
                     .pushNamed(AppRoutes.watchList);
@@ -59,7 +60,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
             ),
             IconButton(
               icon: const Icon(Icons.logout),
-              tooltip: 'Logout',
+              tooltip: UIStrings.logoutTooltip,
               onPressed: () {
                 Provider.of<AuthProvider>(context, listen: false).logout();
               },
@@ -81,7 +82,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Text(
-                    'No results available',
+                    UIStrings.noResultsAvailable,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
