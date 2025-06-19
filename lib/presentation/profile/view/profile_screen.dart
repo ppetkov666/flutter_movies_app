@@ -33,7 +33,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           appBar: AppBar(title: const Text(UIStrings.profileTooltip)),
           body: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.only(top: 0,left: 24,right: 24,bottom: 24),
+              padding: const EdgeInsets.only(
+                  top: 0, left: 24, right: 24, bottom: 24),
               child: Column(
                 children: [
                   // Scrollable content
@@ -83,7 +84,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           child: MovieProfileInfoRow(
                                             label: UIStrings.savedMoviesLabel,
                                             value:
-                                            savedMovies.length.toString(),
+                                                savedMovies.length.toString(),
                                           ),
                                         ),
                                         Icon(
@@ -99,7 +100,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       savedMovies.isNotEmpty) ...[
                                     const SizedBox(height: 8),
                                     ...savedMovies.map(
-                                          (movie) => Padding(
+                                      (movie) => Padding(
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 2.0, horizontal: 8.0),
                                         child: Row(
@@ -135,16 +136,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: viewModel.isLoading
                         ? const MovieLoadingView(size: 32, strokeWidth: 3)
                         : MovieLogoutButton(
-                      onPressed: () async {
-                        await viewModel.logout();
-                        WidgetsBinding.instance
-                            .addPostFrameCallback((_) {
-                          Provider.of<NavigatorProvider>(context,
-                              listen: false)
-                              .pushAndRemoveUntil('/');
-                        });
-                      },
-                    ),
+                            onPressed: () async {
+                              await viewModel.logout();
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                Provider.of<NavigatorProvider>(context,
+                                        listen: false)
+                                    .pushAndRemoveUntil('/');
+                              });
+                            },
+                          ),
                   ),
                 ],
               ),
