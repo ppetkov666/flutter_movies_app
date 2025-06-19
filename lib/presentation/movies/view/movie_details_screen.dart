@@ -1,9 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:movies_app/constants/ui_strings.dart';
 import 'package:provider/provider.dart';
+import 'package:movies_app/constants/ui_strings.dart';
 import 'package:movies_app/domain/entities/movie.dart';
-import 'package:movies_app/presentation/shared/fallback_image.dart';
+import 'package:movies_app/presentation/components/movie_poster.dart';
+import 'package:movies_app/presentation/components/movie_bookmark_action_button.dart';
+import 'package:movies_app/presentation/components/movie_section_block.dart';
+import 'package:movies_app/presentation/components/movie_info_block.dart';
 import 'package:movies_app/presentation/watch_list/view_model/watch_list_view_model.dart';
 
 class MovieDetailsScreen extends StatelessWidget {
@@ -30,15 +32,10 @@ class MovieDetailsScreen extends StatelessWidget {
           children: [
             AspectRatio(
               aspectRatio: 2 / 3,
-              child: hasValidImage
-                  ? CachedNetworkImage(
-                      imageUrl: movie.posterUrl,
-                      fit: BoxFit.cover,
-                      placeholder: (_, __) =>
-                          const Center(child: CircularProgressIndicator()),
-                      errorWidget: (_, __, ___) => const FallbackImage(),
-                    )
-                  : const FallbackImage(),
+              child: MoviePoster(
+                hasValidImage: hasValidImage,
+                posterUrl: movie.posterUrl,
+              ),
             ),
             const SizedBox(height: 16),
             Text(
@@ -50,69 +47,57 @@ class MovieDetailsScreen extends StatelessWidget {
                   : Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 8),
-            Text('${UIStrings.releaseYearLabel}: ${movie.year}'),
-            const SizedBox(height: 8),
-            Text('${UIStrings.releaseDateLabel}: ${movie.releaseDate}'),
-            const SizedBox(height: 8),
-            Text('${UIStrings.durationLabel}: ${movie.formattedDuration}'),
-            const SizedBox(height: 8),
-            Text('${UIStrings.contentRatingLabel}: ${movie.contentRating}'),
-            const SizedBox(height: 8),
-            Text('${UIStrings.averageRatingLabel}: ${movie.averageRatingDisplay}'),
+            if (movie.year.isNotEmpty)
+              MovieInfoBlock(label: UIStrings.releaseYearLabel, value: movie.year),
+            if (movie.releaseDate.isNotEmpty)
+              MovieInfoBlock(label: UIStrings.releaseDateLabel, value: movie.releaseDate),
+            if (movie.formattedDuration.isNotEmpty)
+              MovieInfoBlock(label: UIStrings.durationLabel, value: movie.formattedDuration),
+            if (movie.contentRating.isNotEmpty)
+              MovieInfoBlock(label: UIStrings.contentRatingLabel, value: movie.contentRating),
+            if (movie.averageRatingDisplay.isNotEmpty)
+              MovieInfoBlock(label: UIStrings.averageRatingLabel, value: movie.averageRatingDisplay),
             const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: () {
-                watchListViewModel.toggleMovie(movie);
-              },
-              icon: Icon(isSaved ? Icons.check : Icons.bookmark_border),
-              label:
-                  Text(isSaved ? UIStrings.savedToWatchList : UIStrings.addToWatchList),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: isSaved ? Colors.green : null,
-              ),
+            MovieBookmarkActionButton(
+              isSaved: isSaved,
+              onToggle: () => watchListViewModel.toggleMovie(movie),
             ),
             const SizedBox(height: 24),
-            if (movie.genres.isNotEmpty) ...[
-              const Text(
-                '${UIStrings.genresLabel}:',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 4,
+            if (movie.genres.isNotEmpty)
+              MovieSectionBlock(
+                title: UIStrings.genresLabel,
                 children: movie.genres
-                    .map((genre) => Chip(label: Text(genre)))
+                    .map((g) => Chip(
+                  label: Text(g),
+                  backgroundColor: Theme.of(context)
+                      .colorScheme
+                      .primary
+                      .withOpacity(0.1),
+                ))
                     .toList(),
               ),
-              const SizedBox(height: 16),
-            ],
-            const Text(
-              '${UIStrings.storylineLabel}:',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              movie.storyline.isNotEmpty
-                  ? movie.storyline
-                  : UIStrings.noStorylineAvailable,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 16),
-            if (movie.actors.isNotEmpty) ...[
-              const Text(
-                '${UIStrings.actorsLabel}:',
-                style: TextStyle(fontWeight: FontWeight.bold),
+            MovieSectionBlock(
+              title: UIStrings.storylineLabel,
+              child: Text(
+                movie.storyline.isNotEmpty
+                    ? movie.storyline
+                    : UIStrings.noStorylineAvailable,
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 4,
+            ),
+            if (movie.actors.isNotEmpty)
+              MovieSectionBlock(
+                title: UIStrings.actorsLabel,
                 children: movie.actors
-                    .map((actor) => Chip(label: Text(actor)))
+                    .map((a) => Chip(
+                  label: Text(a),
+                  backgroundColor: Theme.of(context)
+                      .colorScheme
+                      .primary
+                      .withOpacity(0.1),
+                ))
                     .toList(),
               ),
-            ],
           ],
         ),
       ),

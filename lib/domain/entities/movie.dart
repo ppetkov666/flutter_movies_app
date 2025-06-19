@@ -15,7 +15,6 @@ class Movie {
   final String storyline;
   final List<String> actors;
   final String imdbRating;
-  final bool hasValidImage;
   final double averageRating;
 
   Movie({
@@ -33,7 +32,6 @@ class Movie {
     required this.storyline,
     required this.actors,
     required this.imdbRating,
-    required this.hasValidImage,
     required this.averageRating,
   });
 
@@ -45,6 +43,9 @@ class Movie {
 
   String get formattedDuration => TimeFormatter.formatDurationIso8601(duration);
 
+  bool get hasValidImage =>
+      posterUrl.isNotEmpty && posterUrl.toLowerCase() != 'n/a';
+
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -52,9 +53,8 @@ class Movie {
       'year': year,
       'genres': genres,
       'poster': poster,
-      'posterUrl': posterUrl,
+      'posterurl': posterUrl,
       'imdbRating': imdbRating,
-      'hasValidImage': hasValidImage,
       'storyline': storyline,
       'actors': actors,
       'ratings': ratings,
@@ -74,15 +74,14 @@ class Movie {
       genres: List<String>.from(map['genres'] ?? []),
       ratings: List<int>.from(map['ratings'] ?? []),
       poster: map['poster'] ?? '',
-      posterUrl: map['posterurl'] ?? '',
+      posterUrl: map['posterurl'] ?? map['posterUrl'] ?? '',
       contentRating: map['contentRating'] ?? '',
       duration: map['duration'] ?? '',
       releaseDate: map['releaseDate'] ?? '',
       originalTitle: map['originalTitle'] ?? '',
       storyline: map['storyline'] ?? '',
       actors: List<String>.from(map['actors'] ?? []),
-      imdbRating: map['imdbRating'] ?? '',
-      hasValidImage: map['hasValidImage'] is bool ? map['hasValidImage'] : false,
+      imdbRating: map['imdbRating']?.toString() ?? '',
       averageRating: (map['averageRating'] != null)
           ? (map['averageRating'] is int
           ? (map['averageRating'] as int).toDouble()

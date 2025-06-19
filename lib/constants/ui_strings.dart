@@ -20,9 +20,9 @@ class UIStrings {
   static const String releaseDateLabel = 'Release Date';
   static const String durationLabel = 'Duration';
   static const String contentRatingLabel = 'Content Rating';
-  static const String genresLabel = 'Genres:';
-  static const String storylineLabel = 'Storyline:';
-  static const String actorsLabel = 'Actors:';
+  static const String genresLabel = 'Genres';
+  static const String storylineLabel = 'Storyline';
+  static const String actorsLabel = 'Actors';
   static const String noStorylineAvailable = 'No storyline available';
   static const String watchListLabel = 'My watch list';
   static const String noSavedMoviesLabel = 'No saved movies yet.';
@@ -30,5 +30,6 @@ class UIStrings {
   static const String moviesAppLabel = 'Moviees App';
   static const String originalTitleLabel = 'Original Title';
   static const String acccountInfoLabel = 'Account Info';
-  static const String movieLoginBanner = 'assets/images/movie_login_banner.png';
+  static const String movieLoginBanner = 'assets/images/poster_image.png';
+  static const String noDateAvailable = 'Not available';
 }

@@ -66,7 +66,7 @@ class MovieDto {
           ? json['imdbRating'].toString()
           : 'N/A',
       hasValidImage: isValid,
-      averageRating: json['averageRating'] != null
+      averageRating: (json['averageRating'] != null)
           ? (json['averageRating'] is int
           ? (json['averageRating'] as int).toDouble()
           : json['averageRating'] as double)
@@ -90,7 +90,6 @@ class MovieDto {
       storyline: storyline,
       actors: actors,
       imdbRating: imdbRating,
-      hasValidImage: hasValidImage,
       averageRating: averageRating,
     );
   }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:movies_app/domain/entities/movie.dart';
 import 'package:movies_app/presentation/movies/widgets/movie_card.dart';
 import 'package:movies_app/presentation/movies/view_model/movies_view_model.dart';
-import 'package:provider/provider.dart';
 
 class MoviesListView extends StatefulWidget {
   final List<Movie> movies;
@@ -19,9 +19,7 @@ class _MoviesListViewState extends State<MoviesListView> {
   @override
   void initState() {
     super.initState();
-
-    _scrollController = ScrollController();
-    _scrollController.addListener(_onScroll);
+    _scrollController = ScrollController()..addListener(_onScroll);
   }
 
   @override
@@ -36,8 +34,7 @@ class _MoviesListViewState extends State<MoviesListView> {
 
     if (!_scrollController.hasClients || viewModel.isLoading) return;
 
-    const thresholdPixels = 200.0; // this is how close to the bottom of the scren  before another load
-
+    const thresholdPixels = 200.0;
     if (_scrollController.position.pixels + thresholdPixels >=
         _scrollController.position.maxScrollExtent) {
       viewModel.loadMore();
@@ -46,13 +43,20 @@ class _MoviesListViewState extends State<MoviesListView> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      controller: _scrollController,
-      itemCount: widget.movies.length,
-      itemBuilder: (context, index) {
-        final movie = widget.movies[index];
-        return MovieCard(movie: movie, hasValidImage: movie.hasValidImage);
-      },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: ListView.separated(
+        controller: _scrollController,
+        itemCount: widget.movies.length,
+        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        itemBuilder: (context, index) {
+          final movie = widget.movies[index];
+          return MovieCard(
+            movie: movie,
+            hasValidImage: movie.hasValidImage,
+          );
+        },
+      ),
     );
   }
 }

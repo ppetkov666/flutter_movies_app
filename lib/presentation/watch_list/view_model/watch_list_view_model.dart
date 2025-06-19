@@ -58,15 +58,25 @@ class WatchListViewModel extends ChangeNotifier {
     final user = _auth.currentUser;
     if (user == null) return;
 
-    final snapshot =
-    await _firestore.collection('users').doc(user.uid).collection('watchlist').get();
+    final snapshot = await _firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('watchlist')
+        .get();
 
-    _savedMovies
-      ..clear()
-      ..addAll(snapshot.docs.map((doc) => Movie.fromMap(doc.data())));
+    _savedMovies.clear();
+
+    for (var doc in snapshot.docs) {
+      final data = doc.data();
+      /*print('[FIRESTORE] Fetched movie ID: ${data['id']}');
+      print('[FIRESTORE] Title: ${data['title']}');
+      print('[FIRESTORE] Poster URL: ${data['posterUrl'] ?? data['posterurl']}');*/
+      _savedMovies.add(Movie.fromMap(data));
+    }
 
     notifyListeners();
   }
+
 
   void clearWatchList() {
     _savedMovies.clear();
@@ -74,7 +84,7 @@ class WatchListViewModel extends ChangeNotifier {
   }
 
 /*
-  // Optional: listen to realtime changes in Firestore instead of fetchWatchList()
+  // in case we decide to enhance the functionaliry -  listen to realtime changes in Firestore instead of fetchWatchList()
   void listenToWatchListChanges() {
     final user = _auth.currentUser;
     if (user == null) return;

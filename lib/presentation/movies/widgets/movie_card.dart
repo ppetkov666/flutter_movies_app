@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:movies_app/constants/ui_strings.dart';
 import 'package:provider/provider.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:movies_app/domain/entities/movie.dart';
 import 'package:movies_app/core/providers/navigator_provider.dart';
 import 'package:movies_app/routes/app_routes.dart';
 import 'package:movies_app/presentation/watch_list/view_model/watch_list_view_model.dart';
-import 'package:movies_app/presentation/shared/fallback_image.dart';
+import 'package:movies_app/presentation/components/movie_bookmark_button.dart';
+import 'package:movies_app/presentation/components/movie_details_text.dart';
+import 'package:movies_app/presentation/components/movie_poster.dart';
 
 class MovieCard extends StatelessWidget {
   final Movie movie;
@@ -21,53 +21,53 @@ class MovieCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final navigatorProvider =
-    Provider.of<NavigatorProvider>(context, listen: false);
+        Provider.of<NavigatorProvider>(context, listen: false);
     final watchListViewModel = Provider.of<WatchListViewModel>(context);
     final isSaved = watchListViewModel.isSaved(movie);
 
     final displayRating =
-    movie.imdbRating.isNotEmpty && movie.imdbRating != 'N/A'
-        ? movie.imdbRating
-        : movie.ratings.isNotEmpty
-        ? movie.averageRatingDisplay
-        : 'N/A';
+        movie.imdbRating.isNotEmpty && movie.imdbRating != 'N/A'
+            ? movie.imdbRating
+            : movie.ratings.isNotEmpty
+                ? movie.averageRatingDisplay
+                : 'N/A';
 
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: ListTile(
-        leading: SizedBox(
-          width: 50,
-          height: 70,
-          child: hasValidImage
-              ? CachedNetworkImage(
-            imageUrl: movie.posterUrl,
-            fit: BoxFit.cover,
-            placeholder: (_, __) => const Center(
-                child: CircularProgressIndicator(strokeWidth: 2)),
-            errorWidget: (_, __, ___) => const FallbackImage(),
-          )
-              : const FallbackImage(),
-        ),
-        title: Text(movie.title),
-        subtitle: Text('${UIStrings.ratingLabel}: $displayRating'),
-        trailing: IconButton(
-          icon: Icon(
-            isSaved ? Icons.bookmark : Icons.bookmark_border,
-            color: isSaved ? Colors.green : Colors.grey,
-          ),
-          onPressed: () {
-            watchListViewModel.toggleMovie(movie);
+    return InkWell(
+      onTap: () {
+        navigatorProvider.pushNamed(
+          AppRoutes.movieDetails,
+          arguments: {
+            'movie': movie,
+            'hasValidImage': hasValidImage,
           },
+        );
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 4,
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              MoviePoster(
+                  hasValidImage: hasValidImage, posterUrl: movie.posterUrl),
+              const SizedBox(width: 16),
+              Expanded(
+                child: MovieDetailsText(
+                  title: movie.title,
+                  rating: displayRating,
+                ),
+              ),
+              MovieBookmarkButton(
+                isSaved: isSaved,
+                onToggle: () => watchListViewModel.toggleMovie(movie),
+              ),
+            ],
+          ),
         ),
-        onTap: () {
-          navigatorProvider.pushNamed(
-            AppRoutes.movieDetails,
-            arguments: {
-              'movie': movie,
-              'hasValidImage': hasValidImage,
-            },
-          );
-        },
       ),
     );
   }

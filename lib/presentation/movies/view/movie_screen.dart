@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:movies_app/constants/ui_strings.dart';
 import 'package:provider/provider.dart';
+import 'package:movies_app/constants/ui_strings.dart';
 import 'package:movies_app/data/services/movie_api_service.dart';
-import 'package:movies_app/presentation/movies/view_model/movies_view_model.dart';
 import 'package:movies_app/domain/repositories/movie_repository_impl.dart';
 import 'package:movies_app/presentation/movies/widgets/movies_list_view.dart';
+import 'package:movies_app/presentation/components/movie_loading_view.dart';
+import 'package:movies_app/presentation/components/movie_error_view.dart';
+import 'package:movies_app/presentation/components/movie_empty_view.dart';
+import 'package:movies_app/presentation/movies/view_model/movies_view_model.dart';
+import 'package:movies_app/presentation/components/movie_app_bar.dart';
+import 'package:movies_app/presentation/components/movie_app_bar_icon_button.dart';
 import 'package:movies_app/core/providers/auth_provider.dart';
 import 'package:movies_app/core/providers/navigator_provider.dart';
 import 'package:movies_app/routes/app_routes.dart';
@@ -39,27 +44,27 @@ class _MoviesScreenState extends State<MoviesScreen> {
     return ChangeNotifierProvider.value(
       value: _viewModel,
       child: Scaffold(
-        appBar: AppBar(
+        appBar: MovieAppBar(
           title: const Text(UIStrings.comingSoonTitle),
           actions: [
-            IconButton(
-              icon: const Icon(Icons.person),
+            MovieAppBarIconButton(
+              icon: Icons.person,
               tooltip: UIStrings.profileTooltip,
               onPressed: () {
                 Provider.of<NavigatorProvider>(context, listen: false)
                     .pushNamed(AppRoutes.profile);
               },
             ),
-            IconButton(
-              icon: const Icon(Icons.bookmark),
+            MovieAppBarIconButton(
+              icon: Icons.bookmark,
               tooltip: UIStrings.watchListTooltip,
               onPressed: () {
                 Provider.of<NavigatorProvider>(context, listen: false)
                     .pushNamed(AppRoutes.watchList);
               },
             ),
-            IconButton(
-              icon: const Icon(Icons.logout),
+            MovieAppBarIconButton(
+              icon: Icons.logout,
               tooltip: UIStrings.logoutTooltip,
               onPressed: () {
                 Provider.of<AuthProvider>(context, listen: false).logout();
@@ -69,24 +74,13 @@ class _MoviesScreenState extends State<MoviesScreen> {
         ),
         body: Consumer<MoviesViewModel>(
           builder: (context, viewModel, _) {
-            if (viewModel.isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
+            if (viewModel.isLoading) return const MovieLoadingView();
             if (viewModel.error != null) {
-              return Center(child: Text(viewModel.error!));
+              return MovieErrorView(viewModel.error!);
             }
             if (viewModel.movies.isEmpty) {
-              return Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    UIStrings.noResultsAvailable,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ),
-              );
+              return const MovieEmptyView(UIStrings.noResultsAvailable);
             }
-
             return MoviesListView(movies: viewModel.movies);
           },
         ),
