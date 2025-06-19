@@ -31,106 +31,123 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
         return Scaffold(
           appBar: AppBar(title: const Text(UIStrings.profileTooltip)),
-          body: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  UIStrings.acccountInfoLabel,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-                const SizedBox(height: 16),
-                Card(
-                  elevation: 2,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MovieProfileInfoRow(
-                          label: UIStrings.emailLabel,
-                          value: viewModel.userEmail,
-                        ),
-                        const Divider(),
-                        MovieProfileInfoRow(
-                          label: 'Member since',
-                          value: formattedDate,
-                        ),
-                        const Divider(),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _showSavedMovies = !_showSavedMovies;
-                            });
-                          },
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: MovieProfileInfoRow(
-                                  label: UIStrings.savedMoviesLabel,
-                                  value: savedMovies.length.toString(),
-                                ),
-                              ),
-                              Icon(
-                                _showSavedMovies
-                                    ? Icons.expand_less
-                                    : Icons.expand_more,
-                                color: Colors.deepPurple,
-                              ),
-                            ],
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 0,left: 24,right: 24,bottom: 24),
+              child: Column(
+                children: [
+                  // Scrollable content
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            UIStrings.acccountInfoLabel,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(fontWeight: FontWeight.bold),
                           ),
-                        ),
-                        if (_showSavedMovies && savedMovies.isNotEmpty) ...[
-                          const SizedBox(height: 8),
-                          ...savedMovies.map((movie) => Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 2.0, horizontal: 8.0),
-                                child: Row(
-                                  children: [
-                                    const Icon(Icons.movie,
-                                        size: 18, color: Colors.deepPurple),
-                                    const SizedBox(width: 6),
-                                    Expanded(
-                                      child: Text(
-                                        movie.title,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium,
+                          const SizedBox(height: 16),
+                          Card(
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  MovieProfileInfoRow(
+                                    label: UIStrings.emailLabel,
+                                    value: viewModel.userEmail,
+                                  ),
+                                  const Divider(),
+                                  MovieProfileInfoRow(
+                                    label: 'Member since',
+                                    value: formattedDate,
+                                  ),
+                                  const Divider(),
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _showSavedMovies = !_showSavedMovies;
+                                      });
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: MovieProfileInfoRow(
+                                            label: UIStrings.savedMoviesLabel,
+                                            value:
+                                            savedMovies.length.toString(),
+                                          ),
+                                        ),
+                                        Icon(
+                                          _showSavedMovies
+                                              ? Icons.expand_less
+                                              : Icons.expand_more,
+                                          color: Colors.deepPurple,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  if (_showSavedMovies &&
+                                      savedMovies.isNotEmpty) ...[
+                                    const SizedBox(height: 8),
+                                    ...savedMovies.map(
+                                          (movie) => Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 2.0, horizontal: 8.0),
+                                        child: Row(
+                                          children: [
+                                            const Icon(Icons.movie,
+                                                size: 18,
+                                                color: Colors.deepPurple),
+                                            const SizedBox(width: 6),
+                                            Expanded(
+                                              child: Text(
+                                                movie.title,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ],
-                                ),
-                              )),
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
-                      ],
+                      ),
                     ),
                   ),
-                ),
-                const Spacer(),
-                Center(
-                  child: viewModel.isLoading
-                      ? const MovieLoadingView(size: 32, strokeWidth: 3)
-                      : MovieLogoutButton(
-                          onPressed: () async {
-                            await viewModel.logout();
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              Provider.of<NavigatorProvider>(context,
-                                      listen: false)
-                                  .pushAndRemoveUntil('/');
-                            });
-                          },
-                        ),
-                ),
-              ],
+                  const SizedBox(height: 24),
+                  // Fixed logout button
+                  Center(
+                    child: viewModel.isLoading
+                        ? const MovieLoadingView(size: 32, strokeWidth: 3)
+                        : MovieLogoutButton(
+                      onPressed: () async {
+                        await viewModel.logout();
+                        WidgetsBinding.instance
+                            .addPostFrameCallback((_) {
+                          Provider.of<NavigatorProvider>(context,
+                              listen: false)
+                              .pushAndRemoveUntil('/');
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
