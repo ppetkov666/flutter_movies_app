@@ -88,6 +88,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                     () {
                       debugPrint("Login success");
                     },
+                    context,
                   );
                 },
               ),
@@ -108,12 +109,10 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                           ? null
                           : () {
                               viewModel.validateAndLogin(
-                                emailController.text.trim(),
-                                passwordController.text.trim(),
-                                () {
-                                  debugPrint("Login success");
-                                },
-                              );
+                                  emailController.text.trim(),
+                                  passwordController.text.trim(), () {
+                                debugPrint("Login success");
+                              }, context);
                             },
                       isLoading: viewModel.isLoading,
                       label: UIStrings.loginTitle,

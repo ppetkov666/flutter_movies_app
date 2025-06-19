@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movies_app/core/providers/auth_provider.dart';
+import 'package:movies_app/core/utils/query_executor.dart';
 import 'package:movies_app/utils/form_errors.dart';
 import 'package:movies_app/utils/validation_utils.dart';
 
@@ -16,7 +17,12 @@ class LoginViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  void validateAndLogin(String email, String password, VoidCallback onSuccess) {
+  void validateAndLogin(
+      String email,
+      String password,
+      VoidCallback onSuccess,
+      BuildContext context,
+      ) {
     formErrors.clear();
 
     if (email.isEmpty) {
@@ -34,25 +40,28 @@ class LoginViewModel extends ChangeNotifier {
     notifyListeners();
 
     if (!formErrors.hasErrors) {
-      login(email, password, onSuccess);
+      login(email, password, onSuccess, context);
     }
   }
 
-  Future<void> login(String email, String password, VoidCallback onSuccess) async {
-    if (_isLoading) return; // prevent duplicate login calls
+  Future<void> login(
+      String email,
+      String password,
+      VoidCallback onSuccess,
+      BuildContext context,
+      ) async {
+    if (_isLoading) return; // Prevent duplicate login calls
 
     _isLoading = true;
     _error = null;
     notifyListeners();
 
-    try {
+    await QueryExecutor.safeExecute(context, () async {
       await _authProvider.login(email, password);
       onSuccess();
-    } catch (e) {
-      _error = ValidationUtils.friendlyError(e);
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
+    });
+
+    _isLoading = false;
+    notifyListeners();
   }
 }
