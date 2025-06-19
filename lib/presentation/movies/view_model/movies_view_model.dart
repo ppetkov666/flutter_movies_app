@@ -48,8 +48,15 @@ class MoviesViewModel extends ChangeNotifier {
 
     try {
       final moviesList = await _repository.getMovies(page: _currentPage, pageSize: _pageSize);
-      _movies = moviesList;
-      _hasMorePages = moviesList.length == _pageSize; // If it is less that page size -  no more pages
+
+      // we make sure that only unique values will be loaded by id
+      final uniqueMovies = <String, Movie>{};
+      for (var movie in moviesList) {
+        uniqueMovies[movie.id] = movie;
+      }
+      _movies = uniqueMovies.values.toList();
+
+      _hasMorePages = _movies.length == _pageSize;
     } catch (e) {
       _error = 'Failed to fetch movies: ${e.toString()}';
     } finally {
@@ -58,8 +65,9 @@ class MoviesViewModel extends ChangeNotifier {
     }
   }
 
+
   Future<void> loadMore() async {
-    if (_isLoadingMore || !_hasMorePages) return; // to void dublicate calls or loading when no more pages
+    if (_isLoadingMore || !_hasMorePages) return; // Avoid duplicate calls or loading when no more pages
 
     _isLoadingMore = true;
     _error = null;
@@ -68,10 +76,13 @@ class MoviesViewModel extends ChangeNotifier {
     try {
       _currentPage++;
       final moreMovies = await _repository.getMoreMovies(page: _currentPage, pageSize: _pageSize);
+
       if (moreMovies.isEmpty) {
         _hasMorePages = false;
       } else {
-        _movies.addAll(moreMovies);
+        final existingIds = _movies.map((m) => m.id).toSet();
+        final newMovies = moreMovies.where((m) => !existingIds.contains(m.id));
+        _movies.addAll(newMovies);
       }
     } catch (e) {
       _error = '${ErrorMessages.failedToLoadMoreMovies}: ${e.toString()}';
@@ -81,4 +92,5 @@ class MoviesViewModel extends ChangeNotifier {
       safeNotifyListeners();
     }
   }
+
 }
